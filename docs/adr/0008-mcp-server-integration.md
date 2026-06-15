@@ -1,0 +1,3 @@
+# 8. Model Context Protocol (MCP) Server Integration
+
+We decided to implement the Model Context Protocol (MCP) server directly inside the main Tauri Rust backend executable, triggered via a `--mcp` command-line argument. This allows external AI assistants (like Claude Desktop) to connect to the calendar application over stdin/stdout. By using a command-line flag on the main binary, the MCP server directly shares the existing Rust Storage Adapter and Event models, ensuring it accesses and updates the exact same local `calendar.json` file as the GUI application without needing a separate runner or database sync logic.
