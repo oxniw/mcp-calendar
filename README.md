@@ -4,7 +4,17 @@ A lightweight, local desktop calendar application for organizing events and remi
 
 This application is built with **Tauri**, **React**, **TypeScript**, and **Rust**. It compiles down to a single, portable, self-contained executable that manages schedule events fully offline, offering privacy and speed.
 
+
+## Quick Download
+
+You can download the compiled standalone executable directly here:
+
+* **[Download Standalone stop-scrolling.exe](https://github.com/oxniw/mcp-calendar/releases/latest/download/stop-scrolling.exe)**
+
+*(If you are setting up the MCP server, simply download this `.exe`, run it once, and select the clipboard copier to configure Claude Desktop instantly.)*
+
 ---
+
 
 ## Key Features
 

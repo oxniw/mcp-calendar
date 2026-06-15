@@ -28,3 +28,8 @@ _Avoid_: Calendar backup, routine list
 A communication interface in the Rust backend that implements the Model Context Protocol over standard I/O (stdin/stdout), allowing external AI assistants to inspect and modify calendar events.
 _Avoid_: LLM bridge, agent link, calendar API
 
+**Settings Modal**:
+A configuration interface in the GUI application where users can adjust application preferences, such as system autostart.
+_Avoid_: Control panel, options screen
+
+

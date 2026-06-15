@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getEvents, saveEvent, deleteEvent, CalendarEvent, getMcpConfig } from "./tauriClient";
+import { enable as enableAutostart, disable as disableAutostart, isEnabled as isAutostartEnabled } from "@tauri-apps/plugin-autostart";
 import "./App.css";
 
 // Helper constants
@@ -37,12 +38,24 @@ function App() {
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
   const [copySourceDate, setCopySourceDate] = useState("");
 
+  // Settings State
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [autostartEnabled, setAutostartEnabled] = useState(false);
 
-
-  // Load events from Rust backend on startup
+  // Load events and check settings on startup
   useEffect(() => {
     loadAllEvents();
+    checkAutostartStatus();
   }, []);
+
+  async function checkAutostartStatus() {
+    try {
+      const enabled = await isAutostartEnabled();
+      setAutostartEnabled(enabled);
+    } catch (err) {
+      console.error("Failed to check autostart status:", err);
+    }
+  }
 
   async function loadAllEvents() {
     try {
@@ -301,6 +314,22 @@ function App() {
     }
   };
 
+  // Handles autostart setting toggle
+  const handleToggleAutostart = async () => {
+    try {
+      if (autostartEnabled) {
+        await disableAutostart();
+        setAutostartEnabled(false);
+      } else {
+        await enableAutostart();
+        setAutostartEnabled(true);
+      }
+    } catch (err) {
+      console.error("Failed to toggle autostart:", err);
+      alert("Failed to modify autostart setting.");
+    }
+  };
+
   // Triggers click on the hidden file input
   const triggerFileInput = () => {
     document.getElementById("import-file-input")?.click();
@@ -336,7 +365,19 @@ function App() {
       {/* Sidebar - Today's events and action */}
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2>{selectedDate.toLocaleDateString([], { weekday: 'long' })}</h2>
+          <div className="sidebar-header-top">
+            <h2>{selectedDate.toLocaleDateString([], { weekday: 'long' })}</h2>
+            <button 
+              className="btn-icon btn-settings" 
+              onClick={() => setIsSettingsOpen(true)}
+              title="Open Settings"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </button>
+          </div>
           <p>{selectedDate.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}</p>
         </div>
 
@@ -665,7 +706,53 @@ function App() {
         </div>
       )}
 
-
+      {/* Modal - Settings */}
+      {isSettingsOpen && (
+        <div className="modal-overlay" onClick={() => setIsSettingsOpen(false)}>
+          <div className="modal-content settings-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-header-title-container">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-color)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="settings-gear-icon-anim">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <h3>Settings</h3>
+              </div>
+              <button className="btn-icon" onClick={() => setIsSettingsOpen(false)}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            
+            <div className="settings-body">
+              <div className="setting-row">
+                <div className="setting-info">
+                  <span className="setting-title">Launch at System Startup</span>
+                  <span className="setting-desc">Automatically open the calendar when starting your computer.</span>
+                </div>
+                <div className="setting-action">
+                  <label className="toggle-switch">
+                    <input 
+                      type="checkbox" 
+                      checked={autostartEnabled}
+                      onChange={handleToggleAutostart}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div className="modal-actions">
+              <button type="button" className="btn-primary" onClick={() => setIsSettingsOpen(false)} style={{ margin: 0 }}>
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
