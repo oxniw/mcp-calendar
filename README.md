@@ -14,6 +14,10 @@ This application is built with **Tauri**, **React**, **TypeScript**, and **Rust*
 - **Local Data Storage**: All events are stored in a local JSON file under the OS standard AppData directory (`calendar.json`), completely private and shared seamlessly between the GUI and the MCP Server.
 - **Active Notifications**: A background Rust thread monitors events and triggers native OS desktop alerts when an event is about to start.
 
+## Quick Download
+You can download the compiled standalone executable directly here:
+* **[Download Standalone stop-scrolling.exe](YOUR_DOWNLOAD_LINK_HERE)**
+*(If you are setting up the MCP server, simply download this `.exe`, run it once, and select the clipboard copier to configure Claude Desktop instantly.)*
 ---
 
 ## How it Works
