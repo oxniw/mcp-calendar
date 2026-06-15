@@ -1,4 +1,4 @@
-# Calendar with MCP (Vibe coded)
+# Stop scrolling or Calendar with MCP (Vibe coded)
 
 A lightweight, local desktop calendar application for organizing events and reminders, featuring native **Model Context Protocol (MCP)** server integration. 
 
